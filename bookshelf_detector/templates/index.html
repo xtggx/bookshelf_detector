@@ -1,0 +1,35 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Анализ заполняемости книжного шкафа</title>
+</head>
+<body>
+    <h1>Загрузите фото книжного шкафа</h1>
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="processImage()">Обработать</button>
+    <br><br>
+    <img id="resultImage" src="" alt="Результат" style="max-width: 800px;">
+    <div id="stats" style="margin-top: 10px; font-weight: bold;"></div>
+
+    <script>
+    async function processImage() {
+        const file = document.getElementById('imageInput').files[0];
+        if (!file) {
+            alert("Выберите изображение!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await fetch('/process', { method: 'POST', body: formData });
+        const data = await response.json();
+
+        document.getElementById('resultImage').src = 'static/result.jpg?' + Date.now();
+        document.getElementById('stats').innerText = `Обнаружено книг: ${data.count}`;
+    }
+    </script>
+</body>
+</html>
